@@ -20,14 +20,11 @@
 - [Tech Stack](#tech-stack)
 - [Quick Start](#quick-start)
 - [API Documentation](#api-documentation)
-- [Project Structure](#project-structure)
-- [Installation](#installation)
 - [Testing](#testing)
 - [Performance](#performance)
 - [Security](#security)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
 - [License](#license)
+- [Additional commands](#additional-commands)
 
 ## 🎯 Overview
 
@@ -42,6 +39,35 @@ This API provides a solid foundation with:
 - **Event-Driven Architecture** for scalability
 - **Comprehensive Testing** with >80% code coverage
 - **Full API Documentation** with Swagger/OpenAPI
+
+```terminaloutput
+Environment ......................................................................................................................................  
+  Application Name ....................................................................................................................... Thalsecom  
+  Laravel Version .......................................................................................................................... 11.46.1  
+  PHP Version ................................................................................................................................ 8.3.6  
+  Composer Version ........................................................................................................................... 2.7.1  
+  Environment ............................................................................................................................. .env.dev  
+  Debug Mode ............................................................................................................................... ENABLED  
+  URL ............................................................................................................................... localhost:8001  
+  Maintenance Mode ............................................................................................................................. OFF  
+  Timezone ..................................................................................................................................... UTC  
+  Locale ........................................................................................................................................ en  
+
+  Cache ............................................................................................................................................  
+  Config ................................................................................................................................ NOT CACHED  
+  Events ................................................................................................................................ NOT CACHED  
+  Routes ................................................................................................................................ NOT CACHED  
+  Views ..................................................................................................................................... CACHED  
+
+  Drivers ..........................................................................................................................................  
+  Broadcasting ................................................................................................................................. log  
+  Cache ....................................................................................................................................... file  
+  Database ................................................................................................................................... mysql  
+  Logs .............................................................................................................................. stack / single  
+  Mail ......................................................................................................................................... log  
+  Queue ................................................................................................................................... database  
+  Session ................................................................................................................................. database
+```
 
 ## ✨ Key Features
 
@@ -259,7 +285,10 @@ Events & Listeners                  Queue Jobs
 git clone git@github.com:johndearroy/Thalsecom.git
 cd Thalsecom
 
-# 2. Run automated setup
+# 2. Composer
+composer install
+
+# 3. Run docker
 # Build and run containers
 sudo docker compose -f docker-compose.dev.yml --env-file .env.dev up --build
 
@@ -271,10 +300,9 @@ sudo docker exec --env-file .env.dev -ti thalsecom_app bash
 cp .env.dev .env
 php artisan key:generate
 php artisan jwt:secret
-cp .env .env.dev
-rm .env
+php artisan migrate --seed
 
-# 3. Access your API
+# 4. Access your API
 # API: http://localhost:8001/api
 # Docs: http://localhost:8001/api/documentation
 # Telescope: http://localhost:8001/telescope
@@ -284,23 +312,22 @@ rm .env
 
 ```
 Admin:
-  Email: admin@example.com
-  Password: password
+  Email: admin@thalsecom.com
+  Password: password123
 
 Vendor:
-  Email: vendor1@example.com
-  Password: password
+  Email: vendor1@thalsecom.com
+  Password: password123
 
 Customer:
-  Email: customer1@example.com
-  Password: password
+  Email: customer1@thalsecom.com
+  Password: password123
 ```
 
 ## 📚 API Documentation
 
 ### Interactive Documentation
 - **Swagger UI**: http://localhost/api/documentation
-- **ReDoc**: http://localhost/api/redoc (if enabled)
 
 ### API Endpoints Overview
 
@@ -341,110 +368,24 @@ POST   /api/v1/inventory/variants/{id}/adjust   Adjust stock
 GET    /api/v1/inventory/variants/{id}/logs     Get logs
 ```
 
-## 📁 Project Structure
-
-```
-ecommerce-api/
-├── app/
-│   ├── Console/              # Scheduled tasks
-│   ├── Events/               # Application events
-│   ├── Exceptions/           # Custom exceptions
-│   ├── Http/
-│   │   ├── Controllers/      # API controllers
-│   │   ├── Middleware/       # Request middleware
-│   │   ├── Requests/         # Form request validation
-│   │   └── Resources/        # API response resources
-│   ├── Jobs/                 # Queue jobs
-│   ├── Listeners/            # Event listeners
-│   ├── Mail/                 # Mailable classes
-│   ├── Models/               # Eloquent models
-│   ├── Repositories/         # Data access layer
-│   ├── Services/             # Business logic
-│   └── Providers/            # Service providers
-│
-├── bootstrap/                # Bootstrap files
-├── config/                   # Configuration files
-├── database/
-│   ├── factories/            # Model factories
-│   ├── migrations/           # Database migrations
-│   └── seeders/              # Database seeders
-│
-├── resources/
-│   ├── views/
-│   │   ├── emails/          # Email templates
-│   │   └── invoices/        # Invoice templates
-│   └── lang/                # Localization files
-│
-├── routes/
-│   ├── api.php              # API routes
-│   ├── web.php              # Web routes
-│   └── console.php          # Console commands
-│
-├── storage/                 # Application storage
-├── tests/
-│   ├── Feature/             # Feature tests
-│   └── Unit/                # Unit tests
-│
-├── docker-compose.yml       # Docker configuration
-├── phpunit.xml              # PHPUnit configuration
-└── README.md               # This file
-```
-
-## ⚙️ Installation
-
-### Full Installation Guide
-
-```bash
-# 1. Install dependencies
-docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    laravelsail/php82-composer:latest \
-    composer install
-
-# 2. Setup environment
-cp .env.example .env
-
-# 3. Start containers
-./vendor/bin/sail up -d
-
-# 4. Generate keys
-./vendor/bin/sail artisan key:generate
-./vendor/bin/sail artisan jwt:secret
-
-# 5. Database setup
-./vendor/bin/sail artisan migrate
-./vendor/bin/sail artisan db:seed
-
-# 6. Generate API docs
-./vendor/bin/sail artisan l5-swagger:generate
-```
-
 ## 🧪 Testing
 
 ### Run Tests
 
 ```bash
 # All tests
-./vendor/bin/sail artisan test
+php artisan test
 
 # Feature tests only
-./vendor/bin/sail test --testsuite=Feature
+php artisan test --testsuite=Feature
 
 # Unit tests only
-./vendor/bin/sail test --testsuite=Unit
-
-# With coverage report
-./vendor/bin/sail artisan test --coverage
-
-# Watch mode (TDD)
-./vendor/bin/sail artisan test --watch
+php artisan test --testsuite=Unit
 ```
 
 ### Test Coverage
-- Feature Tests: 30+ tests covering all API endpoints
-- Unit Tests: 25+ tests for business logic
+- Feature Tests: 15+ tests covering all API endpoints
+- Unit Tests: 10+ tests for business logic
 - Coverage: >80% of codebase
 
 ## ⚡ Performance
@@ -471,7 +412,6 @@ cp .env.example .env
 
 - ✅ **JWT Authentication** with secure token generation
 - ✅ **CORS Protection** with configurable origins
-- ✅ **CSRF Protection** for web routes
 - ✅ **SQL Injection Prevention** via Eloquent ORM
 - ✅ **Password Hashing** with bcrypt
 - ✅ **Rate Limiting** on sensitive endpoints
@@ -480,217 +420,36 @@ cp .env.example .env
 - ✅ **Role-Based Authorization** checks
 - ✅ **Audit Logging** for all inventory changes
 
-### Best Practices
-
-```bash
-# Use HTTPS in production
-# Rotate JWT secrets regularly
-# Keep dependencies updated: composer update
-# Run security audits: composer audit
-# Use environment variables for secrets
-# Enable database encryption at rest
-```
-
-## 🌐 Deployment
-
-### Docker Deployment
-
-```bash
-# Build production image
-docker build -f Dockerfile.prod -t ecommerce-api:latest .
-
-# Run container
-docker run -d \
-  -p 80:80 \
-  -e APP_ENV=production \
-  -e DB_HOST=db.example.com \
-  ecommerce-api:latest
-```
-
-### Production Checklist
-
-- [ ] Set `APP_ENV=production`
-- [ ] Set `APP_DEBUG=false`
-- [ ] Generate new JWT secret
-- [ ] Configure production database
-- [ ] Setup Redis for caching
-- [ ] Configure queue workers with Supervisor
-- [ ] Setup SSL/TLS certificates
-- [ ] Enable rate limiting
-- [ ] Setup monitoring and logging
-- [ ] Configure automated backups
-
-### Supported Platforms
-
-- **Cloud**: AWS, DigitalOcean, Heroku, Google Cloud
-- **On-Premise**: Linux servers (Ubuntu, CentOS, Debian)
-- **Container**: Docker, Kubernetes
-
-For detailed deployment guide, see [DEPLOYMENT.md](DEPLOYMENT.md)
-
-## 📈 Scalability
-
-### Current Architecture Supports
-
-- 10,000+ concurrent users
-- 1,000,000+ products
-- 10,000,000+ orders per year
-- 100+ transactions per second
-
-### Future Scaling Options
-
-- **Database Sharding** by vendor or date range
-- **Read Replicas** for query optimization
-- **Elasticsearch** for advanced search
-- **CDN Integration** for static assets
-- **Microservices** decomposition
-- **Event Streaming** with Kafka
-
-## 🤝 Contributing
-
-### Development Workflow
-
-```bash
-# Create feature branch
-git checkout -b feature/amazing-feature
-
-# Make changes and test
-./vendor/bin/sail artisan test
-
-# Commit changes
-git commit -m "Add amazing feature"
-
-# Push to remote
-git push origin feature/amazing-feature
-
-# Open pull request
-```
-
-### Code Standards
-
-- PSR-12 coding standard
-- >80% test coverage required
-- All tests must pass
-- No breaking changes in minor versions
-
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📧 Support
+## Additional commands
 
-- **Documentation**: See [README.md](README.md) and [API_TESTING.md](API_TESTING.md)
-- **Issues**: Report bugs on GitHub Issues
-- **Email**: admin@example.com
-- **Documentation Portal**: http://localhost/api/documentation
-
-## 🙏 Acknowledgments
-
-- Laravel Community
-- JWT Authentication Package
-- Open Source Contributors
-
----
-
-**Made with ❤️ by the Development Team**
-
-Last Updated: November 2025
-
-
-
-
-## Running the project
-Download or clone project
-
-Generate key
-
-Generate JWT secret
-
-Change .env.dev
-
-Build container
-
-Migrate and seed
-
-Admin Account:
-- Email: admin@example.com
-- Password: password
-
-Vendor Account:
-- Email: vendor1@example.com
-- Password: password
-
-Customer Account:
-- Email: customer1@example.com
-- Password: password
-
-artisan queue:work
-
-artisan test
-
-To see details of application run: `php artisan about`
-
-Output will look like:
-```terminaloutput
-Environment ......................................................................................................................................  
-  Application Name ....................................................................................................................... Thalsecom  
-  Laravel Version .......................................................................................................................... 11.46.1  
-  PHP Version ................................................................................................................................ 8.3.6  
-  Composer Version ........................................................................................................................... 2.7.1  
-  Environment ............................................................................................................................. .env.dev  
-  Debug Mode ............................................................................................................................... ENABLED  
-  URL ............................................................................................................................... localhost:8001  
-  Maintenance Mode ............................................................................................................................. OFF  
-  Timezone ..................................................................................................................................... UTC  
-  Locale ........................................................................................................................................ en  
-
-  Cache ............................................................................................................................................  
-  Config ................................................................................................................................ NOT CACHED  
-  Events ................................................................................................................................ NOT CACHED  
-  Routes ................................................................................................................................ NOT CACHED  
-  Views ..................................................................................................................................... CACHED  
-
-  Drivers ..........................................................................................................................................  
-  Broadcasting ................................................................................................................................. log  
-  Cache ....................................................................................................................................... file  
-  Database ................................................................................................................................... mysql  
-  Logs .............................................................................................................................. stack / single  
-  Mail ......................................................................................................................................... log  
-  Queue ................................................................................................................................... database  
-  Session ................................................................................................................................. database
-```
-
-
-## To remove the volume and down docker run this:
+### To remove the volume and down docker run this:
 
 ```
 sudo docker compose -f docker-compose.dev.yml --env-file .env.dev down -v
 ```
 
-## To build and up docker container run this:
+### To build and up docker container run this:
 
 ```
 sudo docker compose -f docker-compose.dev.yml --env-file .env.dev up --build
 ```
 
-## To verify the docker containers run this:
+### To verify the docker containers run this:
 
 ```
 sudo docker ps
 ```
-
-you should see something like this:
-CONTAINER ID   IMAGE                          COMMAND                  CREATED         STATUS         PORTS                                                              NAMES
-81ada009b298   phpmyadmin/phpmyadmin:latest   "/docker-entrypoint.…"   2 minutes ago   Up 2 minutes   0.0.0.0:9001->80/tcp, [::]:9001->80/tcp                            thalsecom_phpmyadmin
-4eb5faf51164   php:8.3-fpm                    "docker-php-entrypoi…"   2 minutes ago   Up 2 minutes   9000/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp              thalsecom_app
-bb7f920355c1   mysql:8                        "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes   3306/tcp, 33060/tcp, 0.0.0.0:3308->3308/tcp, [::]:3308->3308/tcp   thalsecom_mysql
 
 ## To enter into the app container run this:
 ```
 sudo docker exec -ti thalsecom_app bash
 ```
 
-## To up and run containers
+### To up and run containers
 ```
 sudo docker compose -f docker-compose.dev.yml --env-file .env.dev up -d
 ```

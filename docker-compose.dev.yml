@@ -1,0 +1,70 @@
+version: '3'
+
+networks:
+  thalsecom_network:
+    driver: bridge
+
+services:
+  thalsecom_mysql:
+#    platform: linux/amd64
+    image: mysql:8
+    container_name: thalsecom_mysql
+    restart: unless-stopped
+    tty: true
+    cap_add:
+      - SYS_NICE
+    env_file:
+      - ./.env.dev
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - ~/mysql:/var/lib/mysql
+    command: --skip-log-bin=1 --disable-log-bin=1
+    environment:
+      MYSQL_TCP_PORT: ${DB_PORT}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - thalsecom_network
+
+  thalsecom_phpmyadmin:
+    container_name: thalsecom_phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - thalsecom_mysql
+    ports:
+      - "${DB_PHPMYADMIN_PORT}:80"
+    networks:
+      - thalsecom_network
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      PMA_HOST: ${DB_HOST}
+      PMA_PORT: ${DB_PORT}
+      UPLOAD_LIMIT: 3000M
+    logging:
+      driver: none
+
+  thalsecom_app:
+    image: php:8.3-fpm
+    container_name: thalsecom_app
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "${APP_PORT}:8000"
+    depends_on:
+      - thalsecom_mysql
+    networks:
+      - thalsecom_network
+    command: >
+      bash -c "
+        apt-get update &&
+        apt-get install -y curl zip unzip libicu-dev libpng-dev libjpeg-dev &&
+        docker-php-ext-install intl pdo pdo_mysql &&
+        php artisan serve --host=0.0.0.0 --port=8000
+      "
+

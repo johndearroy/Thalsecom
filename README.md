@@ -256,7 +256,7 @@ Events & Listeners                  Queue Jobs
 
 ```bash
 # 1. Clone and navigate
-git clone <repository-url>
+git clone git@github.com:johndearroy/Thalsecom.git
 cd Thalsecom
 
 # 2. Run automated setup
